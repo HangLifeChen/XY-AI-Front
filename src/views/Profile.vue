@@ -21,6 +21,7 @@
               <el-upload
                 class="avatar-uploader"
                 action="/api/upload/avatar"
+                :headers="uploadHeaders"
                 :show-file-list="false"
                 :on-success="handleAvatarSuccess"
                 :before-upload="beforeAvatarUpload"
@@ -118,8 +119,14 @@
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { useUserStore } from '@/stores/user'
+import { computed } from 'vue'
 
 const userStore = useUserStore()
+
+// 添加上传请求头，包含 token
+const uploadHeaders = computed(() => ({
+  Authorization: `Bearer ${userStore.token}`
+}))
 
 const profileFormRef = ref()
 const securityFormRef = ref()
