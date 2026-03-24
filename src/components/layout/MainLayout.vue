@@ -56,7 +56,8 @@
         <div v-if="isAuthenticated" class="user-actions">
           <el-dropdown @command="handleUserCommand">
             <div class="user-profile">
-              <el-avatar :size="32" :icon="UserFilled" />
+              <el-avatar v-if="userStore.userInfo.avatar" :size="32" :src="userStore.userInfo.avatar" />
+              <el-avatar v-else :size="32" :icon="UserFilled" />
               <span class="username">{{ userStore.userInfo.username }}</span>
               <el-icon><ArrowDown /></el-icon>
             </div>
