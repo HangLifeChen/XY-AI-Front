@@ -8,6 +8,7 @@
       </template>
 
       <div class="current-plan" v-if="currentUserSubscription">
+  
         <h3>当前订阅计划</h3>
         <el-descriptions :column="1" border>
           <el-descriptions-item label="计划类型">{{ currentPlanName }}</el-descriptions-item>
@@ -280,9 +281,9 @@ const currentUserSubscription = computed(() => userStore.userSubscription)
 
 // 当前计划名称
 const currentPlanName = computed(() => {
-  if (!currentUserSubscription.value) return ''
+  if (!currentUserSubscription.value) return 'free'
   const plan = availablePlans.value.find((p) => p.plan === currentUserSubscription.value?.plan)
-  return plan ? plan.name : ''
+  return plan ? plan.name : "free"
 })
 
 // 可升级的计划（只显示更高级别的计划，并排除免费计划）
