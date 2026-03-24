@@ -1,3 +1,4 @@
+
 <template>
   <div class="profile-container">
     <el-card class="profile-card">
@@ -19,11 +20,19 @@
           <el-col :span="12">
             <div class="avatar-section">
               <el-avatar :size="100" :src="profileForm.avatar" class="avatar-preview" />
-              <el-upload
+              <!-- <el-upload
                 class="avatar-uploader"
                 action=""
                 :http-request="handleAvatarUpload"
                 :show-file-list="false"
+                :before-upload="beforeAvatarUpload"
+              > -->
+              <el-upload
+                class="avatar-uploader"
+                action="/api/user/upload/avatar"
+                :headers="uploadHeaders"
+                :show-file-list="false"
+                :on-success="handleAvatarSuccess"
                 :before-upload="beforeAvatarUpload"
               >
                 <el-button size="small" type="primary">更换头像</el-button>
@@ -121,6 +130,7 @@ import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
 import { useUserStore } from '@/stores/user'
 import { getCurrentUser, updateUser, changePassword as changePasswordApi, uploadAvatar, getUser } from '@/api/user'
 import type { UserInfo } from '@/types/user'
+import { computed } from 'vue'
 
 const userStore = useUserStore()
 
@@ -226,7 +236,19 @@ const handleAvatarUpload = async (options: any) => {
     ElMessage.error('头像上传失败')
   }
 }
+const handleAvatarSuccess = (response: any, uploadFile: any) => {
+  if (uploadFile?.raw) {
+    profileForm.avatar = URL.createObjectURL(uploadFile.raw)
+    ElMessage.success('头像上传成功')
+  } else {
+    ElMessage.error('头像上传失败：文件无效')
+  }
+}
 
+// 添加上传请求头，包含 token
+const uploadHeaders = computed(() => ({
+  Authorization: `Bearer ${userStore.token}`
+}))
 const beforeAvatarUpload = (rawFile: File) => {
   if (rawFile.type !== 'image/jpeg' && rawFile.type !== 'image/png') {
     ElMessage.error('头像必须是 JPG 或 PNG 格式!')

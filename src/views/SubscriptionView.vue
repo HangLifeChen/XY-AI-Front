@@ -23,27 +23,29 @@
               <span
                 >{{ currentUserSubscription.usedAgents }} /
                 {{
-                  currentUserSubscription.configs.maxAgents === -1
+                  currentUserSubscription.configs?.maxAgents === -1
                     ? '无限制'
-                    : currentUserSubscription.configs.maxAgents
+                    : currentUserSubscription.configs?.maxAgents ?? '加载中...'
                 }}</span
               >
               <el-progress
                 :percentage="
-                  currentUserSubscription.configs.maxAgents === -1
+                  currentUserSubscription.configs?.maxAgents === -1
                     ? 0
-                    : Math.round(
-                        (currentUserSubscription.usedAgents /
-                          currentUserSubscription.configs.maxAgents) *
-                          100,
-                      )
+                    : currentUserSubscription.configs?.maxAgents
+                      ? Math.round(
+                          (currentUserSubscription.usedAgents /
+                            currentUserSubscription.configs.maxAgents) *
+                            100,
+                        )
+                      : 0
                 "
                 :status="
                   getProgressStatus(
                     currentUserSubscription.usedAgents /
-                      (currentUserSubscription.configs.maxAgents === -1
+                      (currentUserSubscription.configs?.maxAgents === -1
                         ? 100
-                        : currentUserSubscription.configs.maxAgents),
+                        : currentUserSubscription.configs?.maxAgents ?? 100),
                   )
                 "
                 :show-text="false"
@@ -56,27 +58,29 @@
               <span
                 >{{ currentUserSubscription.usedWorkflows }} /
                 {{
-                  currentUserSubscription.configs.maxWorkflows === -1
+                  currentUserSubscription.configs?.maxWorkflows === -1
                     ? '无限制'
-                    : currentUserSubscription.configs.maxWorkflows
+                    : currentUserSubscription.configs?.maxWorkflows ?? '加载中...'
                 }}</span
               >
               <el-progress
                 :percentage="
-                  currentUserSubscription.configs.maxWorkflows === -1
+                  currentUserSubscription.configs?.maxWorkflows === -1
                     ? 0
-                    : Math.round(
-                        (currentUserSubscription.usedWorkflows /
-                          currentUserSubscription.configs.maxWorkflows) *
-                          100,
-                      )
+                    : currentUserSubscription.configs?.maxWorkflows
+                      ? Math.round(
+                          (currentUserSubscription.usedWorkflows /
+                            currentUserSubscription.configs.maxWorkflows) *
+                            100,
+                        )
+                      : 0
                 "
                 :status="
                   getProgressStatus(
                     currentUserSubscription.usedWorkflows /
-                      (currentUserSubscription.configs.maxWorkflows === -1
+                      (currentUserSubscription.configs?.maxWorkflows === -1
                         ? 100
-                        : currentUserSubscription.configs.maxWorkflows),
+                        : currentUserSubscription.configs?.maxWorkflows ?? 100),
                   )
                 "
                 :show-text="false"
@@ -89,27 +93,31 @@
               <span
                 >{{ formatSize(currentUserSubscription.usedKnowledgeBaseSize) }} /
                 {{
-                  currentUserSubscription.configs.maxKnowledgeBaseSize === -1
+                  currentUserSubscription.configs?.maxKnowledgeBaseSize === -1
                     ? '无限制'
-                    : formatSize(currentUserSubscription.configs.maxKnowledgeBaseSize)
+                    : currentUserSubscription.configs?.maxKnowledgeBaseSize
+                      ? formatSize(currentUserSubscription.configs.maxKnowledgeBaseSize)
+                      : '加载中...'
                 }}</span
               >
               <el-progress
                 :percentage="
-                  currentUserSubscription.configs.maxKnowledgeBaseSize === -1
+                  currentUserSubscription.configs?.maxKnowledgeBaseSize === -1
                     ? 0
-                    : Math.round(
-                        (currentUserSubscription.usedKnowledgeBaseSize /
-                          currentUserSubscription.configs.maxKnowledgeBaseSize) *
-                          100,
-                      )
+                    : currentUserSubscription.configs?.maxKnowledgeBaseSize
+                      ? Math.round(
+                          (currentUserSubscription.usedKnowledgeBaseSize /
+                            currentUserSubscription.configs.maxKnowledgeBaseSize) *
+                            100,
+                        )
+                      : 0
                 "
                 :status="
                   getProgressStatus(
                     currentUserSubscription.usedKnowledgeBaseSize /
-                      (currentUserSubscription.configs.maxKnowledgeBaseSize === -1
+                      (currentUserSubscription.configs?.maxKnowledgeBaseSize === -1
                         ? 100
-                        : currentUserSubscription.configs.maxKnowledgeBaseSize),
+                        : currentUserSubscription.configs?.maxKnowledgeBaseSize ?? 100),
                   )
                 "
                 :show-text="false"
