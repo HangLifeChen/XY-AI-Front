@@ -197,6 +197,11 @@ router.beforeEach((to, from, next) => {
     next({ name: 'Unauthorized' })
     return
   }
+  // 如果有登录且访问的是登录页面，则跳转到主页
+  if (to.path === '/login' && isAuthenticated ) {
+    next({ name: 'Home' })
+  return 
+}
 
   next()
 })
