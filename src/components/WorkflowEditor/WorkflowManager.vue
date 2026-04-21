@@ -430,21 +430,32 @@ const handleCommand = async (command) => {
 // 克隆工作流
 const cloneWorkflow = async (id) => {
   try {
-    const workflow = await workflowStore.getWorkflow(id)
+    const { getWorkflowById: apiGetWorkflowById } = await import('@/api/workflow')
+    const workflow = await apiGetWorkflowById(id)
+    console.log('cloneWorkflow - API response:', JSON.stringify(workflow))
     if (!workflow) {
       ElMessage.error('未找到要克隆的工作流')
       return
     }
 
-    const clonedWorkflow = await workflowStore.createWorkflow({
+    let workflowData = workflow.data
+    if (typeof workflowData === 'string') {
+      workflowData = JSON.parse(workflowData)
+    }
+
+    const { createWorkflow: apiCreateWorkflow } = await import('@/api/workflow')
+    const clonedWorkflow = await apiCreateWorkflow({
       name: `${workflow.name} (副本)`,
       description: workflow.description,
-      data: workflow.data,
+      data: {
+        nodes: JSON.parse(JSON.stringify(workflowData?.nodes || [])),
+        edges: JSON.parse(JSON.stringify(workflowData?.edges || [])),
+      },
     })
 
     if (clonedWorkflow) {
       ElMessage.success('工作流克隆成功')
-      loadWorkflows() // 重新加载列表
+      loadWorkflows()
     }
   } catch (error) {
     console.error('克隆工作流失败:', error)

@@ -74,9 +74,9 @@
                 <el-tag :type="getStatusType(agent.status)" size="small" class="status-tag">
                   {{ getStatusLabel(agent.status) }}
                 </el-tag>
-                <el-tag v-if="agent.a2aEndpoint" type="success" size="small" class="a2a-tag">
+                <!-- <el-tag v-if="agent.status" type="success" size="small" class="a2a-tag">
                   A2A
-                </el-tag>
+                </el-tag> -->
                 <span class="agent-date">{{ formatDate(agent.updatedAt) }}</span>
               </div>
             </div>
@@ -335,8 +335,8 @@ const handleCreateConfirm = async () => {
           version: 1,
           visibility: 'private' as const,
           invocation_count: 0,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
         }
 
         // 调用API创建智能体

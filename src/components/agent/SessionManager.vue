@@ -111,7 +111,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['switchSession', 'refreshSessions'])
+const emit = defineEmits(['switchSession', 'refreshSessions', 'createNewSession'])
 
 // 会话数据
 const renameDialogVisible = ref(false)

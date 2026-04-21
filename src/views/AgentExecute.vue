@@ -85,6 +85,7 @@
         :current-session="currentSession"
         @switch-session="handleSwitchSession"
         @refresh-sessions="loadSessions"
+        @create-new-session="createNewSession"
       />
     </el-drawer>
 
