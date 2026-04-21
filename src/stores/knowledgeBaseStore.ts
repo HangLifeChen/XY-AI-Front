@@ -80,7 +80,7 @@ export const useKnowledgeBaseStore = defineStore('knowledgeBase', () => {
       pageSize.value = filters.value.pageSize
 
       // 计算总知识库大小
-      totalKnowledgeBaseSize.value = knowledgeBases.value.reduce((sum, kb) => sum + (kb.size || 0), 0)
+      totalKnowledgeBaseSize.value = knowledgeBases.value.reduce((sum, kb) => sum + (kb.totalSize || 0), 0)
 
       return response
     } catch (err) {
@@ -188,7 +188,7 @@ export const useKnowledgeBaseStore = defineStore('knowledgeBase', () => {
       knowledgeBases.value = knowledgeBases.value.filter((kb) => kb.id !== id)
 
       // 重新计算总大小
-      totalKnowledgeBaseSize.value = knowledgeBases.value.reduce((sum, kb) => sum + (kb.size || 0), 0)
+      totalKnowledgeBaseSize.value = knowledgeBases.value.reduce((sum, kb) => sum + (kb.totalSize || 0), 0)
 
       return true
     } catch (err) {
@@ -247,8 +247,8 @@ export const useKnowledgeBaseStore = defineStore('knowledgeBase', () => {
     const fileSizeMB = file.size / (1024 * 1024) // 转换为MB
     if (userStore.isKnowledgeBaseLimitReached || 
         (userStore.subscription && 
-         userStore.subscription.usedKnowledgeBaseSize + fileSizeMB > userStore.subscription.maxKnowledgeBaseSize &&
-         userStore.subscription.maxKnowledgeBaseSize !== -1)) {
+         userStore.subscription.usedKnowledgeBaseSize + fileSizeMB > userStore.subscription.configs.maxKnowledgeBaseSize &&
+         userStore.subscription.configs.maxKnowledgeBaseSize !== -1)) {
       error.value = '上传此文件将超出知识库容量限制，请升级订阅计划以增加存储空间'
       console.error('上传文档失败:', error.value)
       isLoading.value = false
