@@ -427,8 +427,10 @@ const createUpdatedNodesClone = () => {
         node.data[originalKey][index].fieldValue = value
       } else {
         // 如果是普通字段，直接更新fieldValue
-        if (node.data[key]) {
+        if (node.data[key] && typeof node.data[key] === 'object') {
           node.data[key].fieldValue = value
+        } else {
+          node.data[key] = { fieldValue: value }
         }
       }
     }
