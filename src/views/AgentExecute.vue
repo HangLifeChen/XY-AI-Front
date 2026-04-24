@@ -1205,13 +1205,12 @@ const sendMessage = async () => {
                 // 查找是否已存在相同 agent 的内容块
                 let agentContentIndex = -1
                 for (let i = 0; i < messages.value[messageIndex].contents.length; i++) {
+                  const c = messages.value[messageIndex].contents[i]
                   if (
-                    messages.value[messageIndex].contents[i].type === 'agent_call' &&
-                    messages.value[messageIndex].contents[i].agentName ===
-                      agentCardData.agentName &&
-                    !messages.value[messageIndex].contents[i].isThinking &&
-                    !messages.value[messageIndex].contents[i].toolName &&
-                    messages.value[messageIndex].contents[i].toolName === agentCardData.toolName
+                    c.type === 'agent_call' &&
+                    c.agentName === agentCardData.agentName &&
+                    !c.isThinking &&
+                    c.toolName === agentCardData.toolName
                   ) {
                     agentContentIndex = i
                     break
@@ -1224,16 +1223,24 @@ const sendMessage = async () => {
                   agentCardData.content !== 'completed' &&
                   agentCardData.content !== ''
                 ) {
-                  // 如果存在相同 agent 的内容块，则追加内容
-                  if (agentContentIndex >= 0) {
-                    // 避免重复添加相同内容
+                  if (agentCardData.isErr) {
+                    const errContent = {
+                      type: 'agent_call',
+                      agentName: agentCardData.agentName,
+                      toolName: agentCardData.toolName,
+                      content: agentCardData.content,
+                      isThinking: false,
+                      isErr: true,
+                    }
+                    messages.value[messageIndex].contents.push(errContent)
+                  } else if (agentContentIndex >= 0) {
                     if (
                       !messages.value[messageIndex].contents[agentContentIndex].content.includes(
                         agentCardData.content,
                       )
                     ) {
                       messages.value[messageIndex].contents[agentContentIndex].content +=
-                        '\n\n---\n\n' + agentCardData.content
+                        agentCardData.content
                     }
                   } else {
                     const workflowResult = processWorkflowContent(
@@ -1268,17 +1275,34 @@ const sendMessage = async () => {
               }
               continue
             } else if (agentCardData.reasoningContent) {
-              // 当agentCardData.reasoningContent不为空且content为空时，代表当前的消息是思考内容，在chatSection聊天页面中展示思考内容
-              const newContent = {
-                type: 'agent_call',
-                agentName: agentCardData.agentName,
-                toolName: agentCardData.toolName,
-                content: agentCardData.reasoningContent,
-                isThinking: true,
-                isErr: agentCardData.isErr ? true : false,
-              }
               if (messageIndex < messages.value.length) {
-                messages.value[messageIndex].contents.push(newContent)
+                let thinkingIndex = -1
+                for (let i = 0; i < messages.value[messageIndex].contents.length; i++) {
+                  const c = messages.value[messageIndex].contents[i]
+                  if (
+                    c.type === 'agent_call' &&
+                    c.agentName === agentCardData.agentName &&
+                    c.isThinking &&
+                    c.toolName === agentCardData.toolName
+                  ) {
+                    thinkingIndex = i
+                    break
+                  }
+                }
+                if (thinkingIndex >= 0) {
+                  messages.value[messageIndex].contents[thinkingIndex].content +=
+                    agentCardData.reasoningContent
+                } else {
+                  const newContent = {
+                    type: 'agent_call',
+                    agentName: agentCardData.agentName,
+                    toolName: agentCardData.toolName,
+                    content: agentCardData.reasoningContent,
+                    isThinking: true,
+                    isErr: agentCardData.isErr ? true : false,
+                  }
+                  messages.value[messageIndex].contents.push(newContent)
+                }
               }
               continue
             } else if (agentCardData.isErr) {
