@@ -300,8 +300,8 @@ const pageSize = computed({
 const statusOptions = [
   { label: '待处理', value: 'pending' },
   { label: '处理中', value: 'processing' },
-  { label: '已索引', value: 'indexed' },
-  { label: '错误', value: 'error' },
+  { label: '已索引', value: 'completed' },
+  { label: '错误', value: 'failed' },
 ]
 
 const sortOptions = [

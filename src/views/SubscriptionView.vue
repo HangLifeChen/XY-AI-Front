@@ -187,18 +187,21 @@
             </ul>
 
             <el-button
-              v-if="
-                (!currentUserSubscription || plan.plan !== currentUserSubscription.plan) &&
-                plan.plan !== 'free'
-              "
+              v-if="currentUserSubscription?.plan === plan.plan"
+              type="success"
+              disabled
+            >
+              当前计划
+            </el-button>
+
+            <el-button
+              v-else-if="plan.plan !== 'free' && isUpgradeTarget(plan)"
               type="primary"
               @click="selectPlan(plan)"
               :disabled="isUpgrading"
             >
               {{ currentUserSubscription ? '升级到此计划' : '选择此计划' }}
             </el-button>
-
-            <el-button v-else type="success" disabled>当前计划</el-button>
           </el-card>
         </el-col>
       </el-row>
@@ -404,7 +407,15 @@ const getProgressStatus = (ratio: number) => {
   return 'exception' // 异常状态（红色）
 }
 
-// 选择计划
+const isUpgradeTarget = (plan: SubscriptionPlanConfigs) => {
+  if (!currentUserSubscription.value) return true
+  const currentIdx = availablePlans.value.findIndex(
+    (p) => p.plan === currentUserSubscription.value?.plan,
+  )
+  const planIdx = availablePlans.value.findIndex((p) => p.plan === plan.plan)
+  return planIdx > currentIdx
+}
+
 const selectPlan = (plan: SubscriptionPlanConfigs) => {
   selectedPlan.value = plan.plan
   showUpgradeDialog.value = true
