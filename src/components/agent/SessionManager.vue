@@ -9,7 +9,7 @@
 
       <el-timeline v-else>
         <el-timeline-item
-          v-for="session in sessions"
+          v-for="session in sortedSessions"
           :key="session.id"
           :timestamp="formatTime(session.timestamp)"
           :type="session.id === currentSession?.id ? 'primary' : 'info'"
@@ -90,7 +90,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { Plus, Refresh, More, ChatLineRound, Calendar } from '@element-plus/icons-vue'
 import dayjs from 'dayjs'
 import { ElMessage, ElMessageBox } from 'element-plus'
@@ -112,6 +112,14 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['switchSession', 'refreshSessions', 'createNewSession'])
+
+const sortedSessions = computed(() => {
+  return [...props.sessions].sort((a, b) => {
+    const timeA = a.timestamp || a.createdAt || 0
+    const timeB = b.timestamp || b.createdAt || 0
+    return new Date(timeB) - new Date(timeA)
+  })
+})
 
 // 会话数据
 const renameDialogVisible = ref(false)
